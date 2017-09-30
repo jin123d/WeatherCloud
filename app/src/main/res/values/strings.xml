@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">WeatherCloud</string>
+    <string name="weather_time">当前最新云图时间 %s</string>
+    <string name="local_time">当前展示云图时间 %s</string>
 </resources>

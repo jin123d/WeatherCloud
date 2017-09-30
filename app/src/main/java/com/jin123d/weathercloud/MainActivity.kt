@@ -1,60 +1,92 @@
 package com.jin123d.weathercloud
 
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
 import android.util.Log
-import com.bumptech.glide.Glide
-import com.bumptech.glide.RequestBuilder
+import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
+
 
 class MainActivity : AppCompatActivity() {
 
-    var time = "201709280045"
-    var requestBuilder: RequestBuilder<Drawable>? = null
+    private var time = "201709280045"
+    private var mToast: Toast? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_main)
 
-        tv_now_time.text = "当前最新云图时间" + DateUtil.getNowWeatherTime(null)
-
-        time = DateUtil.getNowWeatherTime(null)
-        requestBuilder = Glide.with(this).load(DateUtil.getUrl(time))
-
-        getWeather(time)
-
-        btn_get_weather.setOnClickListener {
-            time = et_date.text.toString().trim()
-            val hour = et_time.text.toString().trim()
-            if (TextUtils.isEmpty(time)) {
-                time = DateUtil.getNowWeatherTime(null)
-            } else {
-                time += hour
-            }
-            getWeather(time)
-        }
-
+        init()
 
         btn_last.setOnClickListener {
-            getWeather(DateUtil.timeLastOrNext(time,true))
+            getLastOrNext()
         }
 
         btn_next.setOnClickListener {
-            getWeather(DateUtil.timeLastOrNext(time,false))
+            getLastOrNext(false)
+        }
+
+        btn_now.setOnClickListener {
+            time = DateUtil.getWeatherTime()
+            getWeather(time)
+
+            val weatherTime = getString(R.string.local_time, DateUtil.weather2LocalTime(time))
+            tv_now_time.text = (weatherTime)
         }
     }
 
-    /**
-     *
-     * */
-    fun getWeather(time: String) {
+    private fun init() {
+        time = DateUtil.getWeatherTime()
+        tv_now_time.text = (getString(R.string.weather_time, DateUtil.weather2LocalTime(time)))
+        getWeather(time)
+        getLastAndNextWeather(time, true, true)
+
+    }
+
+    private fun getLastOrNext(isLast: Boolean = true) {
+        time = DateUtil.timeLastOrNext(time, isLast)
+
+        if (TextUtils.isEmpty(time)) {
+            toast("无最新云图")
+            time = DateUtil.getWeatherTime()
+        }
+        getWeather(time)
+        getLastAndNextWeather(time, isLast, !isLast)
+    }
+
+    private fun getWeather(time: String) {
         val url = DateUtil.getUrl(time)
         Log.d("url", url)
-        requestBuilder!!.load(url).into(img_weather)
+        GlideApp.with(this).load(url).into(img_weather)
+
+        val weatherTime = getString(R.string.local_time, DateUtil.weather2LocalTime(time))
+        tv_time.text = (weatherTime)
     }
+
+
+    private fun getLastAndNextWeather(time: String, isLast: Boolean = false, isNext: Boolean = false) {
+        val lastTime = DateUtil.timeLastOrNext(time)
+        val nextTime = DateUtil.timeLastOrNext(time, false)
+        if (isLast && !TextUtils.isEmpty(lastTime)) {
+            GlideApp.with(this).download(DateUtil.getUrl(DateUtil.getUrl(lastTime)))
+        }
+        if (isNext && !TextUtils.isEmpty(nextTime)) {
+            GlideApp.with(this).download(DateUtil.getUrl(DateUtil.getUrl(nextTime)))
+        }
+    }
+
+    private fun toast(msg: String) {
+        if (mToast == null) {
+            mToast = Toast.makeText(this, msg, Toast.LENGTH_SHORT)
+        } else {
+            mToast!!.setText(msg)
+        }
+        mToast!!.show()
+    }
+
 
 }
 
