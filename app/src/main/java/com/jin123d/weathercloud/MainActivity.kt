@@ -1,5 +1,6 @@
 package com.jin123d.weathercloud
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
@@ -16,9 +17,9 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : AppCompatActivity() {
 
     private var time = "201709280045"
-    private var mToast: Toast? = null
     private var dateFactory: IDateFactory = DateFactory.create(DateFactory.ApiType.SINA)
     private var options: RequestOptions? = null
+    private var mToast: Toast? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,9 +48,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun init() {
         options = RequestOptions()
-                .centerCrop()
-                .placeholder(R.mipmap.ic_launcher_round)
-                .error(R.mipmap.ic_launcher)
+                .placeholder(R.mipmap.error)
+                .error(R.mipmap.error)
                 .priority(Priority.HIGH)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
 
@@ -75,9 +75,13 @@ class MainActivity : AppCompatActivity() {
     private fun getWeather(time: String) {
         val url = dateFactory.getUrl(time)
         Log.d("url", url)
-        GlideApp.with(this).apply { options }.load(url).transition(
-                DrawableTransitionOptions.withCrossFade(500)).
-                into(img_weather)
+        options?.let {
+            GlideApp.with(this).load(url).placeholder(R.mipmap.error).
+                    transition(DrawableTransitionOptions.withCrossFade(500))
+                    .apply(it)
+                    .into(img_weather)
+        }
+
 
         val weatherTime = getString(R.string.local_time, dateFactory.weather2LocalTime(time))
         tv_time.text = (weatherTime)
@@ -88,22 +92,28 @@ class MainActivity : AppCompatActivity() {
         val lastTime = dateFactory.timeLastOrNext(time)
         val nextTime = dateFactory.timeLastOrNext(time, false)
         if (isLast && !TextUtils.isEmpty(lastTime)) {
-            GlideApp.with(this).apply { options }.download(dateFactory.getUrl(dateFactory.getUrl(lastTime)))
+            options?.let {
+                GlideApp.with(this).download(dateFactory.getUrl(dateFactory.getUrl(lastTime)))
+                        .apply(it)
+                        .preload()
+            }
         }
         if (isNext && !TextUtils.isEmpty(nextTime)) {
-            GlideApp.with(this).apply { options }.download(dateFactory.getUrl(dateFactory.getUrl(nextTime)))
+            options?.let {
+                GlideApp.with(this).load(dateFactory.getUrl(dateFactory.getUrl(nextTime)))
+                        .apply(it)
+                        .preload()
+            }
         }
     }
 
+    @SuppressLint("ShowToast")
     private fun toast(msg: String) {
         if (mToast == null) {
             mToast = Toast.makeText(this, msg, Toast.LENGTH_SHORT)
-        } else {
-            mToast?.setText(msg)
         }
         mToast?.show()
     }
-
 
 }
 

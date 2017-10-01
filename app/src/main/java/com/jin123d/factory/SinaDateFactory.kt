@@ -81,23 +81,36 @@ class SinaDateFactory : IDateFactory {
             nowTime.append("-")
             nowTime.append("30")
         } else {
-            if (minute < 50) {
-                //35之前读取为上一个小时的
-                //25分之前计算为上一个小时的45分
-                calendar.add(Calendar.HOUR, -1)
-                val newHour = calendar.get(Calendar.HOUR_OF_DAY)
+            when {
+                minute > 50 -> {
+                    nowTime.append(sdf.format(calendar.time))
+                    nowTime.append(hours)
+                    nowTime.append("-")
+                    nowTime.append("00")
+                }
+                minute > 15 -> {
+                    //50分之前计算为上一个小时的45分
+                    calendar.add(Calendar.HOUR, -1)
+                    val newHour = calendar.get(Calendar.HOUR_OF_DAY)
 
-                nowTime.append(sdf.format(calendar.time))
-                nowTime.append(String.format("%02d", newHour))
-                nowTime.append("-")
-                nowTime.append("30")
-            } else {
-                //35分之前计算为本小时00
-                nowTime.append(sdf.format(calendar.time))
-                nowTime.append(hours)
-                nowTime.append("-")
-                nowTime.append("00")
+                    nowTime.append(sdf.format(calendar.time))
+                    nowTime.append(String.format("%02d", newHour))
+                    nowTime.append("-")
+                    nowTime.append("30")
+                }
+                else -> {
+                    //15之前为上一个小时00
+                    calendar.add(Calendar.HOUR, -1)
+                    val newHour = calendar.get(Calendar.HOUR_OF_DAY)
+
+                    nowTime.append(sdf.format(calendar.time))
+                    nowTime.append(String.format("%02d", newHour))
+                    nowTime.append("-")
+                    nowTime.append("00")
+                }
+
             }
+
         }
         return nowTime.toString()
     }
