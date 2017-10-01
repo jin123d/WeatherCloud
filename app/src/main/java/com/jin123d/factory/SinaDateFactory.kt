@@ -81,7 +81,7 @@ class SinaDateFactory : IDateFactory {
             nowTime.append("-")
             nowTime.append("30")
         } else {
-            if (minute < 35) {
+            if (minute < 50) {
                 //35之前读取为上一个小时的
                 //25分之前计算为上一个小时的45分
                 calendar.add(Calendar.HOUR, -1)
@@ -90,7 +90,7 @@ class SinaDateFactory : IDateFactory {
                 nowTime.append(sdf.format(calendar.time))
                 nowTime.append(String.format("%02d", newHour))
                 nowTime.append("-")
-                nowTime.append("00")
+                nowTime.append("30")
             } else {
                 //35分之前计算为本小时00
                 nowTime.append(sdf.format(calendar.time))

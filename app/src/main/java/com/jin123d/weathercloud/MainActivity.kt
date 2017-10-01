@@ -5,6 +5,10 @@ import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
 import android.util.Log
 import android.widget.Toast
+import com.bumptech.glide.Priority
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.bumptech.glide.request.RequestOptions
 import com.jin123d.factory.DateFactory
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -14,6 +18,7 @@ class MainActivity : AppCompatActivity() {
     private var time = "201709280045"
     private var mToast: Toast? = null
     private var dateFactory: IDateFactory = DateFactory.create(DateFactory.ApiType.SINA)
+    private var options: RequestOptions? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,10 +46,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun init() {
+        options = RequestOptions()
+                .centerCrop()
+                .placeholder(R.mipmap.ic_launcher_round)
+                .error(R.mipmap.ic_launcher)
+                .priority(Priority.HIGH)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+
         time = dateFactory.getWeatherTime()
         tv_now_time.text = (getString(R.string.weather_time, dateFactory.weather2LocalTime(time)))
         getWeather(time)
         getLastAndNextWeather(time, true, true)
+
 
     }
 
@@ -62,7 +75,9 @@ class MainActivity : AppCompatActivity() {
     private fun getWeather(time: String) {
         val url = dateFactory.getUrl(time)
         Log.d("url", url)
-        GlideApp.with(this).load(url).into(img_weather)
+        GlideApp.with(this).apply { options }.load(url).transition(
+                DrawableTransitionOptions.withCrossFade(500)).
+                into(img_weather)
 
         val weatherTime = getString(R.string.local_time, dateFactory.weather2LocalTime(time))
         tv_time.text = (weatherTime)
@@ -73,10 +88,10 @@ class MainActivity : AppCompatActivity() {
         val lastTime = dateFactory.timeLastOrNext(time)
         val nextTime = dateFactory.timeLastOrNext(time, false)
         if (isLast && !TextUtils.isEmpty(lastTime)) {
-            GlideApp.with(this).download(dateFactory.getUrl(dateFactory.getUrl(lastTime)))
+            GlideApp.with(this).apply { options }.download(dateFactory.getUrl(dateFactory.getUrl(lastTime)))
         }
         if (isNext && !TextUtils.isEmpty(nextTime)) {
-            GlideApp.with(this).download(dateFactory.getUrl(dateFactory.getUrl(nextTime)))
+            GlideApp.with(this).apply { options }.download(dateFactory.getUrl(dateFactory.getUrl(nextTime)))
         }
     }
 
@@ -84,9 +99,9 @@ class MainActivity : AppCompatActivity() {
         if (mToast == null) {
             mToast = Toast.makeText(this, msg, Toast.LENGTH_SHORT)
         } else {
-            mToast!!.setText(msg)
+            mToast?.setText(msg)
         }
-        mToast!!.show()
+        mToast?.show()
     }
 
 
