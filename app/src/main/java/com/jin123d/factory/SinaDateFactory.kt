@@ -18,7 +18,7 @@ class SinaDateFactory : IDateFactory {
             time
         }
         val url = StringBuilder()
-        url.append(Url.sinalUrl)
+        url.append(Url.sinaUrl)
         url.append(tempTime)
         url.append(Url.sinaEndUel)
         return url.toString()

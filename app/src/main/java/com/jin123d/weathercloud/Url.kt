@@ -8,7 +8,7 @@ object Url {
     const val normalUrl = "/WXCL/medium/SEVP_NSMC_WXCL_ASC_E99_ACHN_LNO_PY_"
     const val endUrl = "00000.JPG"
 
-    const val sinalUrl = "http://sinastorage.com/storage.service.mix.sina.com.cn/satellite_weather_pic/nephogram/nmc_fy2-"
+    const val sinaUrl = "http://sinastorage.com/storage.service.mix.sina.com.cn/satellite_weather_pic/nephogram/nmc_fy2-"
     const val sinaEndUel = ".jpg"
 
 
