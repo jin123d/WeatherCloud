@@ -10,6 +10,6 @@ object Url {
 
     const val sinaUrl = "http://sinastorage.com/storage.service.mix.sina.com.cn/satellite_weather_pic/nephogram/nmc_fy2-"
     const val sinaEndUel = ".jpg"
-
+    const val ACCESS_COARSE_LOCATION_CODE = 10010
 
 }

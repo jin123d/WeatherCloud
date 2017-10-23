@@ -12,10 +12,10 @@ object DateFactory {
     }
 
     fun create(type: ApiType): IDateFactory {
-        if (type == ApiType.SINA) {
-            return SinaDateFactory()
+        return if (type == ApiType.SINA) {
+            SinaDateFactory()
         } else {
-            return NmcDateFactory()
+            NmcDateFactory()
         }
     }
 

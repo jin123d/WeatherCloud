@@ -1,5 +1,6 @@
 package com.jin123d.weathercloud
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -7,14 +8,14 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.os.Bundle
+import android.support.v4.app.ActivityCompat
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
 import android.util.Log
-import android.view.ContextMenu
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.widget.Toast
 import com.bumptech.glide.Priority
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -22,22 +23,25 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
 import com.jin123d.factory.DateFactory
+import com.jin123d.location.CustomAmapLocation
 import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : AppCompatActivity() {
 
     private var time = "201709280045"
-    private var dateFactory: IDateFactory = DateFactory.create(DateFactory.ApiType.SINA)
+    private var dateFactory = DateFactory.create(DateFactory.ApiType.SINA)
+    private lateinit var amapLocation: CustomAmapLocation
     private var options: RequestOptions? = null
     private var mToast: Toast? = null
     private var paint = Paint()
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_main)
+
+        permission()
 
         init()
 
@@ -73,8 +77,6 @@ class MainActivity : AppCompatActivity() {
         tv_now_time.text = (getString(R.string.weather_time, dateFactory.weather2LocalTime(time)))
         getWeather(time)
         getLastAndNextWeather(time, true, true)
-
-
     }
 
     private fun getLastOrNext(isLast: Boolean = true) {
@@ -92,12 +94,6 @@ class MainActivity : AppCompatActivity() {
         val url = dateFactory.getUrl(time)
         Log.d("url", url)
         options?.let {
-            /* GlideApp.with(this).load(url).placeholder(R.mipmap.error).
-                     transition(DrawableTransitionOptions.withCrossFade(500))
-                     .apply(it)
-                     .into(img_weather)*/
-
-
             GlideApp.with(this)
                     .asBitmap()
                     .load(url)
@@ -111,11 +107,6 @@ class MainActivity : AppCompatActivity() {
 
                             canvas.drawCircle(x, y, 5f, paint)
                             img_weather.setImageBitmap(resource)
-                        }
-
-                        override fun onStart() {
-                            super.onStart()
-
                         }
                     })
         }
@@ -164,11 +155,61 @@ class MainActivity : AppCompatActivity() {
 
             R.id.setting -> {
 
+
             }
         }
-
-
         return true
+    }
+
+
+    private fun getLocation() {
+        amapLocation = CustomAmapLocation(this)
+        amapLocation.location(object : CustomAmapLocation.LocationSuccess {
+            override fun success(latitude: Double, longitude: Double) {
+                //定位成功
+                toast("$latitude---$longitude")
+            }
+
+        })
+    }
+
+    /**
+     * 申请权限
+     */
+    private fun permission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
+                //拒绝权限以后
+                showMessageOKCancel()
+                return
+            }
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION),
+                    Url.ACCESS_COARSE_LOCATION_CODE)
+        } else {
+            getLocation()
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == Url.ACCESS_COARSE_LOCATION_CODE) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                //同意授权
+                getLocation()
+            } else {
+                //拒绝授权后重新申请
+                permission()
+            }
+        }
+    }
+
+
+    private fun showMessageOKCancel() {
+        AlertDialog.Builder(this@MainActivity)
+                .setMessage("需要授予定位权限")
+                .setPositiveButton("确定") { _, _ -> finish() }
+                .create()
+                .show()
     }
 
 }
