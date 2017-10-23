@@ -6,19 +6,17 @@ package com.jin123d
 class MapUtil {
 
 
-    fun getMap(latitude: Double, longitude: Double): Array<Int?> {
-        val array = arrayOfNulls<Int>(2)
+    fun getMap(latitude: Double, longitude: Double): IntArray {
+        val a = IntArray(2)
+
+        a[0] = 1
+        a[1] = 2
 
 
 
 
 
-
-
-
-
-
-        return array
+        return a
     }
 
 }
