@@ -1,7 +1,7 @@
 package com.jin123d.weathercloud
 
 import android.Manifest
-import android.annotation.SuppressLint
+import android.content.DialogInterface
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -25,6 +25,7 @@ import com.bumptech.glide.request.transition.Transition
 import com.jin123d.factory.DateFactory
 import com.jin123d.location.CustomAmapLocation
 import kotlinx.android.synthetic.main.activity_main.*
+import org.jetbrains.anko.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -33,7 +34,6 @@ class MainActivity : AppCompatActivity() {
     private var dateFactory = DateFactory.create(DateFactory.ApiType.SINA)
     private lateinit var amapLocation: CustomAmapLocation
     private var options: RequestOptions? = null
-    private var mToast: Toast? = null
     private var paint = Paint()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -129,20 +129,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    @SuppressLint("ShowToast")
-    private fun toast(msg: String) {
-        if (mToast == null) {
-            mToast = Toast.makeText(this, msg, Toast.LENGTH_SHORT)
-        }
-        mToast?.show()
-    }
-
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.main, menu)
         return true
     }
-
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         val id = item!!.itemId
@@ -169,9 +160,9 @@ class MainActivity : AppCompatActivity() {
                 //定位成功
                 toast("$latitude---$longitude")
             }
-
         })
     }
+
 
     /**
      * 申请权限
@@ -205,11 +196,9 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun showMessageOKCancel() {
-        AlertDialog.Builder(this@MainActivity)
-                .setMessage("需要授予定位权限")
-                .setPositiveButton("确定") { _, _ -> finish() }
-                .create()
-                .show()
+        alert("需要授予定位权限") {
+            noButton { finish() }
+        }.show()
     }
 
 }
