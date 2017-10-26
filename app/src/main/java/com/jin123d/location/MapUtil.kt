@@ -1,7 +1,7 @@
-package com.jin123d
+package com.jin123d.location
 
 /**
- * Created by tianGe_jin123d on 2017/10/23.
+ * Created by jin123d on 2017/10/23.
  **/
 class MapUtil {
 

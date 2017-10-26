@@ -12,10 +12,8 @@ import android.os.Bundle
 import android.provider.Settings
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
-import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import com.bumptech.glide.Priority
@@ -26,13 +24,10 @@ import com.bumptech.glide.request.transition.Transition
 import com.jin123d.factory.DateFactory
 import com.jin123d.location.CustomAmapLocation
 import kotlinx.android.synthetic.main.activity_main.*
-import org.jetbrains.anko.alert
-import org.jetbrains.anko.noButton
-import org.jetbrains.anko.toast
-import org.jetbrains.anko.yesButton
+import org.jetbrains.anko.*
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), AnkoLogger {
 
     private var time = "201709280045"
     private var dateFactory = DateFactory.create(DateFactory.ApiType.SINA)
@@ -96,7 +91,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun getWeather(time: String) {
         val url = dateFactory.getUrl(time)
-        Log.d("url", url)
+        debug(url)
         options?.let {
             GlideApp.with(this)
                     .asBitmap()
@@ -143,9 +138,10 @@ class MainActivity : AppCompatActivity() {
         val id = item!!.itemId
         when (id) {
             R.id.about -> {
-                AlertDialog.Builder(this).setTitle(R.string.app_name)
-                        .setMessage("v" + packageManager.getPackageInfo(packageName, PackageManager.COMPONENT_ENABLED_STATE_DEFAULT).versionName)
-                        .create().show()
+                alert {
+                    titleResource = R.string.app_name
+                    message = "v" + packageManager.getPackageInfo(packageName, PackageManager.COMPONENT_ENABLED_STATE_DEFAULT).versionName
+                }.show()
             }
 
             R.id.setting -> {
@@ -162,7 +158,8 @@ class MainActivity : AppCompatActivity() {
         amapLocation.location(object : CustomAmapLocation.LocationSuccess {
             override fun success(latitude: Double, longitude: Double) {
                 //定位成功
-                toast("$latitude---$longitude")
+                //            toast("$latitude---$longitude")
+                debug("$latitude---$longitude")
             }
         })
     }

@@ -3,10 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/WeatherCloud.iml" filepath="$PROJECT_DIR$/WeatherCloud.iml" />
-      <module fileurl="file://G:\Android\workspace\weatherCloud\WeatherCloud.iml" filepath="G:\Android\workspace\weatherCloud\WeatherCloud.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://G:\Android\workspace\weatherCloud\app\app.iml" filepath="G:\Android\workspace\weatherCloud\app\app.iml" />
-      <module fileurl="file://E:\workspace\WeatherCloud\.idea\weatherCloud.iml" filepath="E:\workspace\WeatherCloud\.idea\weatherCloud.iml" />
     </modules>
   </component>
 </project>
