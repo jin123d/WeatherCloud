@@ -1,16 +1,15 @@
 package com.jin123d.location
 
 import android.content.Context
+import android.util.Log
 import com.amap.api.location.AMapLocationClient
 import com.amap.api.location.AMapLocationClientOption
-import org.jetbrains.anko.AnkoLogger
-import org.jetbrains.anko.error
 
 
 /**
  * Created by jin123d on 2017/10/18.
  **/
-class CustomAmapLocation(context: Context) : AnkoLogger {
+class CustomAmapLocation(context: Context) {
     private val mContext = context
 
     //声明AMapLocationClientOption对象
@@ -30,7 +29,7 @@ class CustomAmapLocation(context: Context) : AnkoLogger {
                 mLocationClient.stopLocation()
 
             } else {
-                error("location Error, ErrCode:" + amapLocation.errorCode + ", errInfo:" + amapLocation.errorInfo)
+                Log.e("CustomAmapLocation", "location Error, ErrCode:" + amapLocation.errorCode + ", errInfo:" + amapLocation.errorInfo)
             }
         }
         //声明AMapLocationClientOption对象

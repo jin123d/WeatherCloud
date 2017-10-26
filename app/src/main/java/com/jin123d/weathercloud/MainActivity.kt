@@ -14,6 +14,7 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import com.bumptech.glide.Priority
@@ -24,12 +25,16 @@ import com.bumptech.glide.request.transition.Transition
 import com.jin123d.factory.DateFactory
 import com.jin123d.location.CustomAmapLocation
 import kotlinx.android.synthetic.main.activity_main.*
-import org.jetbrains.anko.*
+import org.jetbrains.anko.alert
+import org.jetbrains.anko.noButton
+import org.jetbrains.anko.toast
+import org.jetbrains.anko.yesButton
 
 
-class MainActivity : AppCompatActivity(), AnkoLogger {
+class MainActivity : AppCompatActivity() {
 
     private var time = "201709280045"
+    private val TAG = this.javaClass.simpleName
     private var dateFactory = DateFactory.create(DateFactory.ApiType.SINA)
     private lateinit var amapLocation: CustomAmapLocation
     private var options: RequestOptions? = null
@@ -37,7 +42,6 @@ class MainActivity : AppCompatActivity(), AnkoLogger {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.activity_main)
 
         permission()
@@ -91,7 +95,7 @@ class MainActivity : AppCompatActivity(), AnkoLogger {
 
     private fun getWeather(time: String) {
         val url = dateFactory.getUrl(time)
-        debug(url)
+        Log.d(TAG, url)
         options?.let {
             GlideApp.with(this)
                     .asBitmap()
@@ -158,8 +162,7 @@ class MainActivity : AppCompatActivity(), AnkoLogger {
         amapLocation.location(object : CustomAmapLocation.LocationSuccess {
             override fun success(latitude: Double, longitude: Double) {
                 //定位成功
-                //            toast("$latitude---$longitude")
-                debug("$latitude---$longitude")
+                Log.d(TAG, "$latitude---$longitude")
             }
         })
     }
