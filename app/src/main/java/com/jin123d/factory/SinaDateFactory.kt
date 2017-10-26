@@ -1,7 +1,7 @@
 package com.jin123d.factory
 
 import com.jin123d.weathercloud.IDateFactory
-import com.jin123d.weathercloud.Url
+import com.jin123d.weathercloud.Const
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -18,9 +18,9 @@ class SinaDateFactory : IDateFactory {
             time
         }
         val url = StringBuilder()
-        url.append(Url.sinaUrl)
+        url.append(Const.sinaUrl)
         url.append(tempTime)
-        url.append(Url.sinaEndUel)
+        url.append(Const.sinaEndUel)
         return url.toString()
     }
 

@@ -1,13 +1,15 @@
 package com.jin123d.weathercloud
 
 import android.Manifest
-import android.content.DialogInterface
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
@@ -16,7 +18,6 @@ import android.text.TextUtils
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
 import com.bumptech.glide.Priority
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
@@ -25,7 +26,10 @@ import com.bumptech.glide.request.transition.Transition
 import com.jin123d.factory.DateFactory
 import com.jin123d.location.CustomAmapLocation
 import kotlinx.android.synthetic.main.activity_main.*
-import org.jetbrains.anko.*
+import org.jetbrains.anko.alert
+import org.jetbrains.anko.noButton
+import org.jetbrains.anko.toast
+import org.jetbrains.anko.yesButton
 
 
 class MainActivity : AppCompatActivity() {
@@ -171,11 +175,11 @@ class MainActivity : AppCompatActivity() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
                 //拒绝权限以后
-                showMessageOKCancel()
-                return
+                //showMessageOKCancel()
+            } else {
+                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION),
+                        Const.ACCESS_LOCATION_CODE)
             }
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION),
-                    Url.ACCESS_COARSE_LOCATION_CODE)
         } else {
             getLocation()
         }
@@ -183,7 +187,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == Url.ACCESS_COARSE_LOCATION_CODE) {
+        if (requestCode == Const.ACCESS_LOCATION_CODE) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 //同意授权
                 getLocation()
@@ -197,6 +201,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun showMessageOKCancel() {
         alert("需要授予定位权限") {
+            yesButton {
+                val packageURI = Uri.parse("package:" + packageName)
+                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, packageURI)
+                startActivity(intent)
+            }
             noButton { finish() }
         }.show()
     }
