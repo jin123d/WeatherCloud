@@ -8,14 +8,21 @@ import com.jin123d.weathercloud.IDateFactory
 object DateFactory {
 
     enum class ApiType {
-        NMC, SINA
+        NMC, SINA, PMSC
     }
 
     fun create(type: ApiType): IDateFactory {
-        return if (type == ApiType.SINA) {
-            SinaDateFactory()
-        } else {
-            NmcDateFactory()
+        return when (type) {
+            ApiType.SINA -> {
+                SinaDateFactory()
+            }
+            ApiType.NMC -> {
+                NmcDateFactory()
+            }
+            ApiType.PMSC -> {
+                PmscDateFactory()
+            }
+
         }
     }
 

@@ -9,7 +9,10 @@ object Const {
     const val endUrl = "00000.JPG"
 
     const val sinaUrl = "http://sinastorage.com/storage.service.mix.sina.com.cn/satellite_weather_pic/nephogram/nmc_fy2-"
-    const val sinaEndUel = ".jpg"
+    const val jpgEndUrl = ".jpg"
     const val ACCESS_LOCATION_CODE = 10010
+
+    const val pmscUrl = "http://pi.weather.com.cn/i/product/pic/l/sevp_nsmc_wxcl_asc_e99_achn_lno_py_"
+    const val pmscendUrl = "00000.jpg"
 
 }

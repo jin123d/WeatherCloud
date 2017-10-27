@@ -20,7 +20,7 @@ class SinaDateFactory : IDateFactory {
         val url = StringBuilder()
         url.append(Const.sinaUrl)
         url.append(tempTime)
-        url.append(Const.sinaEndUel)
+        url.append(Const.jpgEndUrl)
         return url.toString()
     }
 

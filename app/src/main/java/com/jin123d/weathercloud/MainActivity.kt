@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity() {
 
     private var time = "201709280045"
     private val TAG = this.javaClass.simpleName
-    private var dateFactory = DateFactory.create(DateFactory.ApiType.SINA)
+    private var dateFactory = DateFactory.create(DateFactory.ApiType.PMSC)
     private lateinit var amapLocation: CustomAmapLocation
     private var options: RequestOptions? = null
     private var paint = Paint()

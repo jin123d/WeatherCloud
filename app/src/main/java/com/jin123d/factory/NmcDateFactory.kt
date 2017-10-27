@@ -8,7 +8,7 @@ import java.util.*
 /**
  * Created by tianGe_jin123d on 2017/9/28.
  **/
-class NmcDateFactory : IDateFactory {
+open class NmcDateFactory : IDateFactory {
 
     /**
      * 格式必须为201709200930
