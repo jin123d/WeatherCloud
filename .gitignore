@@ -7,4 +7,5 @@
 /build
 /captures
 vcs.xml
+/.idea/modules.xml
 .externalNativeBuild

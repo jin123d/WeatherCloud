@@ -1,14 +1,14 @@
 package com.jin123d.factory
 
 import com.jin123d.weathercloud.IDateFactory
-import com.jin123d.weathercloud.Url
+import com.jin123d.weathercloud.Const
 import java.text.SimpleDateFormat
 import java.util.*
 
 /**
  * Created by tianGe_jin123d on 2017/9/28.
  **/
-class NmcDateFactory : IDateFactory {
+open class NmcDateFactory : IDateFactory {
 
     /**
      * 格式必须为201709200930
@@ -20,11 +20,11 @@ class NmcDateFactory : IDateFactory {
             time
         }
         val url = StringBuilder()
-        url.append(Url.baseUrl)
+        url.append(Const.baseUrl)
         url.append(time2Date(tempTime))
-        url.append(Url.normalUrl)
+        url.append(Const.normalUrl)
         url.append(tempTime)
-        url.append(Url.endUrl)
+        url.append(Const.endUrl)
         return url.toString()
     }
 

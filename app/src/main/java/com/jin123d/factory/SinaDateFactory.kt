@@ -1,7 +1,7 @@
 package com.jin123d.factory
 
 import com.jin123d.weathercloud.IDateFactory
-import com.jin123d.weathercloud.Url
+import com.jin123d.weathercloud.Const
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -18,9 +18,9 @@ class SinaDateFactory : IDateFactory {
             time
         }
         val url = StringBuilder()
-        url.append(Url.sinaUrl)
+        url.append(Const.sinaUrl)
         url.append(tempTime)
-        url.append(Url.sinaEndUel)
+        url.append(Const.jpgEndUrl)
         return url.toString()
     }
 
@@ -32,12 +32,12 @@ class SinaDateFactory : IDateFactory {
         val date = sdf1.parse(nowTime)
         calendar.time = date
         calendar.add(Calendar.MINUTE, if (isLast) -30 else 30) //201709301605
-        if (isLast && calendar.get(Calendar.HOUR_OF_DAY) == 3 && calendar.get(Calendar.MINUTE) == 0) {
-            calendar.add(Calendar.HOUR_OF_DAY, -4)
-            calendar.add(Calendar.MINUTE, 30) //201709301605
+        if (isLast && calendar.get(Calendar.HOUR_OF_DAY) == 7 && calendar.get(Calendar.MINUTE) == 30) {
+            calendar.add(Calendar.HOUR_OF_DAY, -8)
+            //calendar.add(Calendar.MINUTE, 30) //201709301605
         } else if (!isLast && calendar.get(Calendar.HOUR_OF_DAY) == 0) {
-            calendar.add(Calendar.HOUR_OF_DAY, 3)
-            calendar.add(Calendar.MINUTE, 30) //201709301605
+            calendar.add(Calendar.HOUR_OF_DAY, 8)
+            //calendar.add(Calendar.MINUTE, 30) //201709301605
         }
         if (!isLast) {
             val phoneTime = sdf1.parse(getWeatherTime()).time
@@ -73,7 +73,7 @@ class SinaDateFactory : IDateFactory {
         val minute = calendar.get(Calendar.MINUTE)
         val hours = calendar.get(Calendar.HOUR_OF_DAY)
 
-        if (hours < 4) {
+        if (hours < 9) {
             //am 4点00之前，直接是前一天晚上23:45-
             calendar.add(Calendar.DAY_OF_MONTH, -1)
             nowTime.append(sdf.format(calendar.time))
