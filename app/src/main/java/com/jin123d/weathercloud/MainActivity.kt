@@ -17,6 +17,7 @@ import android.text.TextUtils
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import com.amap.api.services.weather.LocalWeatherLive
 import com.bumptech.glide.Priority
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
@@ -160,6 +161,14 @@ class MainActivity : AppCompatActivity() {
     private fun getLocation() {
         amapLocation = CustomAmapLocation(this)
         amapLocation.location(object : CustomAmapLocation.LocationSuccess {
+            override fun weather(weatherLive: LocalWeatherLive) {
+                val text = weatherLive.city + "当前天气" + "\n" +
+                        "天气：" + weatherLive.weather + "\n" +
+                        "温度：" + weatherLive.temperature + "\n" +
+                        "湿度：" + weatherLive.humidity
+                tv_weather.text = text
+            }
+
             override fun success(latitude: Double, longitude: Double) {
                 //定位成功
                 Log.d(TAG, "$latitude---$longitude")
