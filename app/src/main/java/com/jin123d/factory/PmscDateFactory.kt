@@ -8,7 +8,7 @@ import java.util.*
 /**
  * Created by tianGe_jin123d on 2017/9/28.
  **/
-class PmscDateFactory : NmcDateFactory() {
+open class PmscDateFactory : NmcDateFactory() {
 
     /**
      * 格式必须为201709200930
