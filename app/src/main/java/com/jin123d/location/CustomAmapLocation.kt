@@ -20,9 +20,9 @@ class CustomAmapLocation(context: Context) : WeatherSearch.OnWeatherSearchListen
     private var mLocationClient = AMapLocationClient(mContext)
     private lateinit var mQuery: WeatherSearchQuery
     private var mWeatherSearch = WeatherSearch(mContext)
-    private lateinit var locationInter: LocationSuccess
+    private lateinit var locationInter: LocationListener
 
-    fun location(locationInter: LocationSuccess) {
+    fun location(locationInter: LocationListener) {
         this.locationInter = locationInter
         //声明AMapLocationClient类对象
         //初始化定位
@@ -55,9 +55,15 @@ class CustomAmapLocation(context: Context) : WeatherSearch.OnWeatherSearchListen
     }
 
 
-    interface LocationSuccess {
+    interface LocationListener {
+        /**
+         * 获取定位成功
+         * */
         fun success(latitude: Double, longitude: Double)
 
+        /**
+         * 获取天气
+         * */
         fun weather(weatherLive: LocalWeatherLive)
     }
 

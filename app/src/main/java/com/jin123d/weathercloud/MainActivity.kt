@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.net.Uri
@@ -160,7 +159,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun getLocation() {
         amapLocation = CustomAmapLocation(this)
-        amapLocation.location(object : CustomAmapLocation.LocationSuccess {
+        amapLocation.location(object : CustomAmapLocation.LocationListener {
             override fun weather(weatherLive: LocalWeatherLive) {
                 val text = weatherLive.city + "当前天气" + "\n" +
                         "天气：" + weatherLive.weather + "\n" +
