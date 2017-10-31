@@ -105,11 +105,11 @@ class MainActivity : AppCompatActivity() {
                     .apply(it)
                     .into<SimpleTarget<Bitmap>>(object : SimpleTarget<Bitmap>() {
                         override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>) {
-                            val canvas = Canvas(resource)
-                            val x = ((965f / 1720f) * resource.width)
-                            val y = ((532f / 1200f) * resource.height)
+                            //val canvas = Canvas(resource)
+                            //val x = ((965f / 1720f) * resource.width)
+                            //val y = ((532f / 1200f) * resource.height)
 
-                            canvas.drawCircle(x, y, 5f, paint)
+                            //canvas.drawCircle(x, y, 5f, paint)
                             img_weather.setImageBitmap(resource)
                         }
                     })
@@ -171,7 +171,7 @@ class MainActivity : AppCompatActivity() {
 
             override fun success(latitude: Double, longitude: Double) {
                 //定位成功
-                Log.d(TAG, "$latitude---$longitude")
+                //Log.d(TAG, "$latitude---$longitude")
             }
         })
     }
