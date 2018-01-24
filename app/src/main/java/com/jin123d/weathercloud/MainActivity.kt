@@ -29,6 +29,8 @@ import org.jetbrains.anko.alert
 import org.jetbrains.anko.noButton
 import org.jetbrains.anko.toast
 import org.jetbrains.anko.yesButton
+import java.io.File
+import java.io.FileOutputStream
 
 
 class MainActivity : AppCompatActivity() {
@@ -39,6 +41,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var amapLocation: CustomAmapLocation
     private var options: RequestOptions? = null
     private var paint = Paint()
+    private var shareBitmap: Bitmap? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -109,6 +112,7 @@ class MainActivity : AppCompatActivity() {
                             //val y = ((532f / 1200f) * resource.height)
 
                             //canvas.drawCircle(x, y, 5f, paint)
+                            shareBitmap = resource;
                             img_weather.setImageBitmap(resource)
                         }
                     })
@@ -148,9 +152,8 @@ class MainActivity : AppCompatActivity() {
                 }.show()
             }
 
-            R.id.setting -> {
-
-
+            R.id.share -> {
+                share(shareBitmap)
             }
         }
         return true
@@ -216,6 +219,29 @@ class MainActivity : AppCompatActivity() {
             }
             noButton { finish() }
         }.show()
+    }
+
+    private fun share(bitmap: Bitmap?) {
+        if (bitmap != null) {
+            val file = File(externalCacheDir, time + ".jpg")
+            if (file.exists()) {
+                file.delete()
+            }
+            val out = FileOutputStream(file)
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
+            out.flush()
+            out.close()
+
+            if (file.exists()) {
+                val intent = Intent()
+                intent.action = Intent.ACTION_SEND
+                intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file))
+                intent.type = "image/*"
+                startActivity(Intent.createChooser(intent, "分享"))
+            }
+        } else {
+            toast("图片还未加载成功")
+        }
     }
 
 }
