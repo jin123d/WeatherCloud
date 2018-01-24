@@ -15,4 +15,7 @@ object Const {
     const val pmscUrl = "http://pi.weather.com.cn/i/product/pic/l/sevp_nsmc_wxcl_asc_e99_achn_lno_py_"
     const val pmscendUrl = "00000.jpg"
 
+    const val cmaUrl = "http://image.data.cma.cn/vis/P_WXCL_ASC_E99_ACHN_LNO_PY/"
+    const val cmaNormalUrl = "/SEVP_NSMC_WXCL_ASC_E99_ACHN_LNO_PY_"
+
 }

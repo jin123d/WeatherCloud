@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.net.Uri
@@ -17,6 +16,7 @@ import android.text.TextUtils
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import com.amap.api.services.weather.LocalWeatherLive
 import com.bumptech.glide.Priority
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
@@ -29,16 +29,19 @@ import org.jetbrains.anko.alert
 import org.jetbrains.anko.noButton
 import org.jetbrains.anko.toast
 import org.jetbrains.anko.yesButton
+import java.io.File
+import java.io.FileOutputStream
 
 
 class MainActivity : AppCompatActivity() {
 
     private var time = "201709280045"
     private val TAG = this.javaClass.simpleName
-    private var dateFactory = DateFactory.create(DateFactory.ApiType.PMSC)
+    private var dateFactory = DateFactory.create(DateFactory.ApiType.CMA)
     private lateinit var amapLocation: CustomAmapLocation
     private var options: RequestOptions? = null
     private var paint = Paint()
+    private var shareBitmap: Bitmap? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -104,11 +107,12 @@ class MainActivity : AppCompatActivity() {
                     .apply(it)
                     .into<SimpleTarget<Bitmap>>(object : SimpleTarget<Bitmap>() {
                         override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>) {
-                            val canvas = Canvas(resource)
-                            val x = ((965f / 1720f) * resource.width)
-                            val y = ((532f / 1200f) * resource.height)
+                            //val canvas = Canvas(resource)
+                            //val x = ((965f / 1720f) * resource.width)
+                            //val y = ((532f / 1200f) * resource.height)
 
-                            canvas.drawCircle(x, y, 5f, paint)
+                            //canvas.drawCircle(x, y, 5f, paint)
+                            shareBitmap = resource;
                             img_weather.setImageBitmap(resource)
                         }
                     })
@@ -148,9 +152,8 @@ class MainActivity : AppCompatActivity() {
                 }.show()
             }
 
-            R.id.setting -> {
-
-
+            R.id.share -> {
+                share(shareBitmap)
             }
         }
         return true
@@ -159,10 +162,18 @@ class MainActivity : AppCompatActivity() {
 
     private fun getLocation() {
         amapLocation = CustomAmapLocation(this)
-        amapLocation.location(object : CustomAmapLocation.LocationSuccess {
+        amapLocation.location(object : CustomAmapLocation.LocationListener {
+            override fun weather(weatherLive: LocalWeatherLive) {
+                val text = weatherLive.city + "当前天气" + "\n" +
+                        "天气：" + weatherLive.weather + "\n" +
+                        "温度：" + weatherLive.temperature + "\n" +
+                        "湿度：" + weatherLive.humidity
+                tv_weather.text = text
+            }
+
             override fun success(latitude: Double, longitude: Double) {
                 //定位成功
-                Log.d(TAG, "$latitude---$longitude")
+                //Log.d(TAG, "$latitude---$longitude")
             }
         })
     }
@@ -208,6 +219,29 @@ class MainActivity : AppCompatActivity() {
             }
             noButton { finish() }
         }.show()
+    }
+
+    private fun share(bitmap: Bitmap?) {
+        if (bitmap != null) {
+            val file = File(externalCacheDir, time + ".jpg")
+            if (file.exists()) {
+                file.delete()
+            }
+            val out = FileOutputStream(file)
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
+            out.flush()
+            out.close()
+
+            if (file.exists()) {
+                val intent = Intent()
+                intent.action = Intent.ACTION_SEND
+                intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file))
+                intent.type = "image/*"
+                startActivity(Intent.createChooser(intent, "分享"))
+            }
+        } else {
+            toast("图片还未加载成功")
+        }
     }
 
 }
