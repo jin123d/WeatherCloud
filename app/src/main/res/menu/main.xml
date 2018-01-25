@@ -7,7 +7,7 @@
         app:showAsAction="collapseActionView" />
 
     <item
-        android:id="@+id/setting"
-        android:title="设置"
+        android:id="@+id/share"
+        android:title="分享"
         app:showAsAction="collapseActionView" />
 </menu>
