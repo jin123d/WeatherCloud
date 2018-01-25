@@ -166,8 +166,8 @@ class MainActivity : AppCompatActivity() {
             override fun weather(weatherLive: LocalWeatherLive) {
                 val text = weatherLive.city + "当前天气" + "\n" +
                         "天气：" + weatherLive.weather + "\n" +
-                        "温度：" + weatherLive.temperature + "\n" +
-                        "湿度：" + weatherLive.humidity
+                        "温度：" + weatherLive.temperature + "℃\n" +
+                        "湿度：" + weatherLive.humidity + "%"
                 tv_weather.text = text
             }
 
