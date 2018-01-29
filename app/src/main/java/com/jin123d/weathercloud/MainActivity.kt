@@ -1,6 +1,7 @@
 package com.jin123d.weathercloud
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -16,6 +17,7 @@ import android.text.TextUtils
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import com.amap.api.services.weather.LocalWeatherLive
 import com.bumptech.glide.Priority
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -27,7 +29,6 @@ import com.jin123d.location.CustomAmapLocation
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.noButton
-import org.jetbrains.anko.toast
 import org.jetbrains.anko.yesButton
 import java.io.File
 import java.io.FileOutputStream
@@ -42,6 +43,7 @@ class MainActivity : AppCompatActivity() {
     private var options: RequestOptions? = null
     private var paint = Paint()
     private var shareBitmap: Bitmap? = null
+    private var toast: Toast? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -89,7 +91,7 @@ class MainActivity : AppCompatActivity() {
         time = dateFactory.timeLastOrNext(time, isLast)
 
         if (TextUtils.isEmpty(time)) {
-            toast("无最新云图")
+            showToast("无最新云图")
             time = dateFactory.getWeatherTime()
         }
         getWeather(time)
@@ -240,8 +242,17 @@ class MainActivity : AppCompatActivity() {
                 startActivity(Intent.createChooser(intent, "分享"))
             }
         } else {
-            toast("图片还未加载成功")
+            showToast("图片还未加载成功")
         }
+    }
+
+    @SuppressLint("ShowToast")
+    private fun showToast(msg: String) {
+        if (toast == null) {
+            toast = Toast.makeText(this, msg, Toast.LENGTH_SHORT)
+        }
+        toast?.setText(msg)
+        toast?.show()
     }
 
 }
