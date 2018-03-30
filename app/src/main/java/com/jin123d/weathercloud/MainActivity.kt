@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity() {
     private val TAG = this.javaClass.simpleName
     private var dateFactory = DateFactory.create(DateFactory.ApiType.CMA)
     private lateinit var amapLocation: CustomAmapLocation
-    private var options: RequestOptions? = null
+    private lateinit var options: RequestOptions
     private var paint = Paint()
     private var shareBitmap: Bitmap? = null
     private var toast: Toast? = null
@@ -101,29 +101,23 @@ class MainActivity : AppCompatActivity() {
     private fun getWeather(time: String) {
         val url = dateFactory.getUrl(time)
         Log.d(TAG, url)
-        options?.let {
-            GlideApp.with(this)
-                    .asBitmap()
-                    .load(url)
-                    .placeholder(R.mipmap.error)
-                    .apply(it)
-                    .into<SimpleTarget<Bitmap>>(object : SimpleTarget<Bitmap>() {
-                        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>) {
-                            //val canvas = Canvas(resource)
-                            //val x = ((965f / 1720f) * resource.width)
-                            //val y = ((532f / 1200f) * resource.height)
 
-                            //canvas.drawCircle(x, y, 5f, paint)
-                            shareBitmap = resource;
-                            img_weather.setImageBitmap(resource)
-                        }
-                    })
-        }
+        GlideApp.with(this)
+                .asBitmap()
+                .load(url)
+                .apply(options)
+                .placeholder(R.mipmap.error)
+                .into<SimpleTarget<Bitmap>>(object : SimpleTarget<Bitmap>() {
+                    override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>) {
+                        shareBitmap = resource
+                        img_weather.setImageBitmap(resource)
+                    }
+                })
 
         val weatherTime = getString(R.string.local_time, dateFactory.weather2LocalTime(time))
         tv_time.text = (weatherTime)
-    }
 
+    }
 
     private fun getLastAndNextWeather(time: String, isLast: Boolean = false, isNext: Boolean = false) {
         val lastTime = dateFactory.timeLastOrNext(time)
@@ -150,7 +144,7 @@ class MainActivity : AppCompatActivity() {
             R.id.about -> {
                 alert {
                     titleResource = R.string.app_name
-                    message = "v" + packageManager.getPackageInfo(packageName, PackageManager.COMPONENT_ENABLED_STATE_DEFAULT).versionName
+                    message = "v" + BuildConfig.VERSION_NAME
                 }.show()
             }
 
@@ -215,7 +209,7 @@ class MainActivity : AppCompatActivity() {
     private fun showMessageOKCancel() {
         alert("需要授予定位权限") {
             yesButton {
-                val packageURI = Uri.parse("package:" + packageName)
+                val packageURI = Uri.parse("package:$packageName")
                 val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, packageURI)
                 startActivity(intent)
             }
@@ -225,7 +219,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun share(bitmap: Bitmap?) {
         if (bitmap != null) {
-            val file = File(externalCacheDir, time + ".jpg")
+            val file = File(externalCacheDir, "$time.jpg")
             if (file.exists()) {
                 file.delete()
             }
